@@ -1,0 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:learn_flutter_widgets/home.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: const Color(0xFF0081A7),
+          secondary: const Color(0xFF00AFB9),
+        ),
+        useMaterial3: true,
+      ),
+      home: const Home(),
+    );
+  }
+}
