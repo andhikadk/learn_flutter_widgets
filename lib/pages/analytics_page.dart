@@ -17,6 +17,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   int totalSalary = 0;
   int averageSalary = 0;
   int totalTalent = 0;
+  int totalRoles = 0;
 
   Future<int> getTotalSalary() async {
     prefs = await SharedPreferences.getInstance();
@@ -59,21 +60,40 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     return 0;
   }
 
-  void setSalary() async {
+  Future<int> getTotalRoles() async {
+    prefs = await SharedPreferences.getInstance();
+    List<String>? oldTalentsJson = prefs.getStringList('talents');
+    if (oldTalentsJson != null) {
+      List<Talent> talents =
+          oldTalentsJson.map((t) => Talent.fromJson(jsonDecode(t))).toList();
+      List<String> roles = [];
+      for (var talent in talents) {
+        if (!roles.contains(talent.position)) {
+          roles.add(talent.position);
+        }
+      }
+      return roles.length;
+    }
+    return 0;
+  }
+
+  void setAmount() async {
     int totalSalary = await getTotalSalary();
     int averageSalary = await getAverageSalary();
     int totalTalent = await getTotalTalent();
+    int totalRoles = await getTotalRoles();
     setState(() {
       this.totalSalary = totalSalary;
       this.averageSalary = averageSalary;
       this.totalTalent = totalTalent;
+      this.totalRoles = totalRoles;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    setSalary();
+    setAmount();
   }
 
   @override
@@ -104,7 +124,11 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
             AnalyticsCard(
               title: 'Total Talents',
               amount: totalTalent,
-            )
+            ),
+            AnalyticsCard(
+              title: 'Total Roles',
+              amount: totalRoles,
+            ),
           ],
         ),
       ),
