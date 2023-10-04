@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learn_flutter_widgets/components/add_form.dart';
 import 'package:learn_flutter_widgets/components/edit_form.dart';
 import 'package:learn_flutter_widgets/components/talent_list_card.dart';
+import 'package:learn_flutter_widgets/components/search_box.dart';
 import 'package:learn_flutter_widgets/models/talent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -119,23 +120,8 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.all(12),
-                color: Colors.white,
-                child: TextField(
-                  onChanged: (value) => updateTalentList(value),
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    hintText: 'Search Talent',
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 239, 239, 239),
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
+              SearchBox(
+                updateTalentList: updateTalentList,
               ),
               FutureBuilder<List<Talent>>(
                 future: getTalents(searchQuery ?? ''),
