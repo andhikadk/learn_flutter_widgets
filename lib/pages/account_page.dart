@@ -8,7 +8,7 @@ class AccountPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Page 3',
+          'Account',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -17,12 +17,9 @@ class AccountPage extends StatelessWidget {
       body: Container(
         color: Colors.white,
         child: const Center(
-          child: Text(
-            'Account Page',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-            ),
+          child: CircleAvatar(
+            radius: 100,
+            backgroundImage: AssetImage('assets/images/andhika.png'),
           ),
         ),
       ),

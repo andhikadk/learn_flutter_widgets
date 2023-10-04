@@ -111,48 +111,42 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(const Duration(seconds: 2));
-          setState(() {});
-        },
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            children: [
-              SearchBox(
-                updateTalentList: updateTalentList,
-              ),
-              FutureBuilder<List<Talent>>(
-                future: getTalents(searchQuery ?? ''),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return TalentListCard(
-                            name: snapshot.data![index].name,
-                            position: snapshot.data![index].position,
-                            salary: snapshot.data![index].salary,
-                            edit: () {
-                              showModalBottomEdit(context, snapshot, index);
-                            },
-                            delete: () {
-                              showDialogAlertDelete(context, index);
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            SearchBox(
+              updateTalentList: updateTalentList,
+            ),
+            FutureBuilder<List<Talent>>(
+              future: getTalents(searchQuery ?? ''),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return TalentListCard(
+                          name: snapshot.data![index].name,
+                          position: snapshot.data![index].position,
+                          salary: snapshot.data![index].salary,
+                          edit: () {
+                            showModalBottomEdit(context, snapshot, index);
+                          },
+                          delete: () {
+                            showDialogAlertDelete(context, index);
+                          },
+                        );
+                      },
+                    ),
                   );
-                },
-              ),
-            ],
-          ),
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+          ],
         ),
       ),
       floatingActionButton:
@@ -180,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                 deleteTalent(index);
                 Navigator.pop(context);
               },
-              child: const Text('Delete'),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
         );

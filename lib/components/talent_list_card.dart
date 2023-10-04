@@ -32,6 +32,7 @@ class TalentListCard extends StatelessWidget {
           name,
           style: const TextStyle(fontSize: 18),
         ),
+        iconColor: Theme.of(context).colorScheme.primary,
         subtitle: Text(position, style: const TextStyle(fontSize: 12)),
         leading: const Icon(Icons.person),
         trailing: Row(
