@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:learn_flutter_widgets/components/add_form.dart';
-import 'package:learn_flutter_widgets/data/talent.dart';
+import 'package:learn_flutter_widgets/components/edit_form.dart';
+import 'package:learn_flutter_widgets/components/talent_list_card.dart';
+import 'package:learn_flutter_widgets/models/talent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
   late SharedPreferences prefs;
+  String? searchQuery;
 
   List<Talent> talents = [];
 
@@ -38,23 +41,62 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<List<Talent>> getTalents() async {
+  void updateTalent({
+    required String name,
+    required String position,
+    required int salary,
+    required int index,
+  }) {
+    if (_formKey.currentState!.validate()) {
+      List<String>? oldTalentsJson = prefs.getStringList('talents');
+      if (oldTalentsJson != null) {
+        talents =
+            oldTalentsJson.map((t) => Talent.fromJson(jsonDecode(t))).toList();
+      }
+      talents[index] = Talent(name: name, position: position, salary: salary);
+      List<String> talentsJson =
+          talents.map((t) => jsonEncode(t.toJson())).toList();
+      prefs.setStringList('talents', talentsJson);
+      setState(() {});
+      Navigator.pop(context);
+    }
+  }
+
+  void deleteTalent(int index) {
+    List<String>? oldTalentsJson = prefs.getStringList('talents');
+    if (oldTalentsJson != null) {
+      talents =
+          oldTalentsJson.map((t) => Talent.fromJson(jsonDecode(t))).toList();
+    }
+    talents.removeAt(index);
+    List<String> talentsJson =
+        talents.map((t) => jsonEncode(t.toJson())).toList();
+    prefs.setStringList('talents', talentsJson);
+    setState(() {});
+  }
+
+  Future<List<Talent>> getTalents(String? query) async {
     prefs = await SharedPreferences.getInstance();
     List<String>? talentsJson = prefs.getStringList('talents');
     if (talentsJson != null) {
-      return talentsJson.map((t) => Talent.fromJson(jsonDecode(t))).toList();
+      List<Talent> talents =
+          talentsJson.map((t) => Talent.fromJson(jsonDecode(t))).toList();
+      if (query != null && query.isNotEmpty) {
+        talents = talents
+            .where((t) =>
+                t.name.toLowerCase().contains(query.toLowerCase()) ||
+                t.position.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+      return talents;
     }
     return [];
   }
 
-  Future initial() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  @override
-  void initState() {
-    initial();
-    super.initState();
+  void updateTalentList(String value) {
+    setState(() {
+      searchQuery = value;
+    });
   }
 
   @override
@@ -80,30 +122,39 @@ class _HomePageState extends State<HomePage> {
               Container(
                 margin: const EdgeInsets.all(12),
                 color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Talent List',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
+                child: TextField(
+                  onChanged: (value) => updateTalentList(value),
+                  autofocus: false,
+                  decoration: const InputDecoration(
+                    hintText: 'Search Talent',
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 239, 239, 239),
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
               FutureBuilder<List<Talent>>(
-                future: getTalents(),
+                future: getTalents(searchQuery ?? ''),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(snapshot.data![index].name),
-                            subtitle: Text(snapshot.data![index].position),
-                            trailing: Text(
-                              snapshot.data![index].salary.toString(),
-                            ),
+                          return TalentListCard(
+                            name: snapshot.data![index].name,
+                            position: snapshot.data![index].position,
+                            salary: snapshot.data![index].salary,
+                            edit: () {
+                              showModalBottomEdit(context, snapshot, index);
+                            },
+                            delete: () {
+                              showDialogAlertDelete(context, index);
+                            },
                           );
                         },
                       ),
@@ -120,6 +171,61 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton:
           FloatingButton(formKey: _formKey, saveTalent: saveTalent),
+    );
+  }
+
+  Future<dynamic> showDialogAlertDelete(BuildContext context, int index) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Talent'),
+          backgroundColor: Colors.white,
+          content: const Text('Are you sure want to delete this talent?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                deleteTalent(index);
+                Navigator.pop(context);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<dynamic> showModalBottomEdit(
+      BuildContext context, AsyncSnapshot<List<Talent>> snapshot, int index) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            padding: const EdgeInsets.all(16),
+            color: Colors.white,
+            child: EditForm(
+              formKey: _formKey,
+              name: snapshot.data![index].name,
+              position: snapshot.data![index].position,
+              salary: snapshot.data![index].salary,
+              index: index,
+              onSubmit: updateTalent,
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,45 +1,67 @@
 import 'package:flutter/material.dart';
 
-class AddForm extends StatefulWidget {
+class EditForm extends StatefulWidget {
   final void Function({
     required String name,
     required String position,
     required int salary,
+    required int index,
   }) onSubmit;
 
-  const AddForm({
+  final String name;
+  final String position;
+  final int salary;
+  final int index;
+
+  const EditForm({
     super.key,
     required GlobalKey<FormState> formKey,
     required this.onSubmit,
+    required this.name,
+    required this.position,
+    required this.salary,
+    required this.index,
   }) : _formKey = formKey;
 
   final GlobalKey<FormState> _formKey;
 
   @override
-  State<AddForm> createState() => _AddFormState();
+  State<EditForm> createState() => _EditFormState();
 }
 
-class _AddFormState extends State<AddForm> {
+class _EditFormState extends State<EditForm> {
   final _nameController = TextEditingController();
   final _positionController = TextEditingController();
   final _salaryController = TextEditingController();
 
-  void createTalent({
+  void updateTalent({
     required String name,
     required String position,
     required int salary,
+    required int index,
   }) {
     if (widget._formKey.currentState!.validate()) {
       widget.onSubmit(
         name: name,
         position: position,
         salary: salary,
+        index: index,
       );
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.name;
+    _positionController.text = widget.position;
+    _salaryController.text = widget.salary.toString();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    int index = widget.index;
+
     return Form(
       key: widget._formKey,
       child: Column(
@@ -130,13 +152,14 @@ class _AddFormState extends State<AddForm> {
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    createTalent(
+                    updateTalent(
                       name: _nameController.text,
                       position: _positionController.text,
                       salary: int.tryParse(_salaryController.text) ?? 0,
+                      index: index,
                     );
                   },
-                  child: const Text('Save'),
+                  child: const Text('Update'),
                 ),
               ],
             ),
