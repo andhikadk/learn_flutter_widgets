@@ -17,23 +17,27 @@ class AccountPage extends StatelessWidget {
       body: Container(
         color: Colors.white,
         width: double.infinity,
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 100,
-              backgroundImage: AssetImage('assets/images/andhika.png'),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Andhika Dwi Khalisyahputra',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'admin',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            ),
-          ],
+        height: double.infinity,
+        alignment: Alignment.center,
+        child: const SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 100,
+                backgroundImage: AssetImage('assets/images/andhika.png'),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Andhika Dwi Khalisyahputra',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'admin',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+            ],
+          ),
         ),
       ),
     );

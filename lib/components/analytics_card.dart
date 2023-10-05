@@ -30,7 +30,7 @@ class AnalyticsCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: TotalSalary(
+        child: TotalAmount(
           title: title,
           amount: amount,
           isCurrency: isCurrency,
@@ -40,23 +40,18 @@ class AnalyticsCard extends StatelessWidget {
   }
 }
 
-class TotalSalary extends StatefulWidget {
+class TotalAmount extends StatelessWidget {
   final String title;
   final int amount;
   final bool isCurrency;
 
-  const TotalSalary({
+  const TotalAmount({
     super.key,
     required this.title,
     required this.amount,
     this.isCurrency = false,
   });
 
-  @override
-  State<TotalSalary> createState() => _TotalSalaryState();
-}
-
-class _TotalSalaryState extends State<TotalSalary> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -68,7 +63,7 @@ class _TotalSalaryState extends State<TotalSalary> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.title,
+                title,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
                   fontSize: 12,
@@ -76,28 +71,19 @@ class _TotalSalaryState extends State<TotalSalary> {
                 ),
               ),
               const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        widget.isCurrency
-                            ? NumberFormat.currency(
-                                locale: 'id',
-                                symbol: 'Rp',
-                                decimalDigits: 0,
-                              ).format(widget.amount)
-                            : widget.amount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Text(
+                isCurrency
+                    ? NumberFormat.currency(
+                        locale: 'id',
+                        symbol: 'Rp',
+                        decimalDigits: 0,
+                      ).format(amount)
+                    : amount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

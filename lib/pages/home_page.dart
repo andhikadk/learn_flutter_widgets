@@ -191,17 +191,21 @@ class _HomePageState extends State<HomePage> {
         return Padding(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.4,
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: EditForm(
-              formKey: _formKey,
-              name: snapshot.data![index].name,
-              position: snapshot.data![index].position,
-              salary: snapshot.data![index].salary,
-              index: index,
-              onSubmit: updateTalent,
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height < 600
+                  ? MediaQuery.of(context).size.height
+                  : MediaQuery.of(context).size.height * 0.4,
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: EditForm(
+                formKey: _formKey,
+                name: snapshot.data![index].name,
+                position: snapshot.data![index].position,
+                salary: snapshot.data![index].salary,
+                index: index,
+                onSubmit: updateTalent,
+              ),
             ),
           ),
         );
@@ -245,13 +249,17 @@ class FloatingButton extends StatelessWidget {
         return Padding(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.4,
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: AddForm(
-              formKey: _formKey,
-              onSubmit: saveTalent,
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height < 600
+                  ? MediaQuery.of(context).size.height
+                  : MediaQuery.of(context).size.height * 0.4,
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: AddForm(
+                formKey: _formKey,
+                onSubmit: saveTalent,
+              ),
             ),
           ),
         );

@@ -109,25 +109,29 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       ),
       body: Container(
         color: Colors.white,
-        child: Column(
+        child: ListView(
           children: [
-            AnalyticsCard(
-              title: 'Total Cost',
-              amount: totalSalary,
-              isCurrency: true,
-            ),
-            AnalyticsCard(
-              title: 'Average Salary',
-              amount: averageSalary,
-              isCurrency: true,
-            ),
-            AnalyticsCard(
-              title: 'Total Talents',
-              amount: totalTalent,
-            ),
-            AnalyticsCard(
-              title: 'Total Roles',
-              amount: totalRoles,
+            Column(
+              children: [
+                AnalyticsCard(
+                  title: 'Total Cost',
+                  amount: totalSalary,
+                  isCurrency: true,
+                ),
+                AnalyticsCard(
+                  title: 'Average Salary',
+                  amount: averageSalary,
+                  isCurrency: true,
+                ),
+                AnalyticsCard(
+                  title: 'Total Talents',
+                  amount: totalTalent,
+                ),
+                AnalyticsCard(
+                  title: 'Total Roles',
+                  amount: totalRoles,
+                ),
+              ],
             ),
           ],
         ),
